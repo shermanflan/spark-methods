@@ -133,3 +133,12 @@ dmypy.json
 
 # Pycharm
 .idea
+
+# Spark
+/metastore_db
+
+# Jupyter
+/jupyter/data
+
+# Misc
+/data

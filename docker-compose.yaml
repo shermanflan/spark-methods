@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  sql-spark:
+    image: sql-spark
+    build:
+      context: ./local-db
+      dockerfile: Dockerfile
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=HelloWorld1
+      - MSSQL_PID=Developer
+#  spark-methods:
+#    image: spark-methods
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8888:8888
+#    command: "jupyter notebook --ip 0.0.0.0 --no-browser --allow-root --NotebookApp.token=''"
+#    depends_on:
+#      - sql-parquet
+#    env_file: .env
+#    environment:
+#        - APP_LOG_KEY=bhs.aci.spark-methods.dev
+#        - LOG_LEVEL=DEBUG
+#        - STORE_BASE_PATH=
+#        - SQL_HOST=sql-spark
+#        - SQL_DB=ScratchDB
+#        - SQL_USER=sa
+#    volumes:
+#      - ./jupyter:/opt/spark-service/local

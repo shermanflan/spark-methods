@@ -4,3 +4,5 @@ declare SPARK_HOME=/home/condesa1931/personal/github/spark-methods/install/spark
 #declare PYSPARK_PYTHON=~/personal/github/spark-methods/.venv/bin/python
 
 source ~/personal/github/spark-methods/.venv/bin/activate
+
+./eyes-only.sh
