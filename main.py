@@ -1,7 +1,7 @@
 import logging
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
+from pyspark.sql.functions import col, split
 
 from utils import (
     STORAGE_ACCOUNT, STORAGE_KEY, APP_LOG_KEY
@@ -12,9 +12,15 @@ from utils.config import log
 logger = logging.getLogger(__name__)
 
 
-def sql_expressions(session, df):
+def app_0(session, df):
+    """
+    SQL Expressions
 
-    logger.info(f"{df.columns}")
+    :param session:
+    :param df:
+    :return:
+    """
+    logger.info(f"Dataframe columns: {df.columns}")
 
     # session.sql("CREATE DATABASE patient_model")
     # session.sql("USE patient_model;")
@@ -73,6 +79,64 @@ def sql_expressions(session, df):
     # )
 
 
+def app_1(session, source_path, table_name):
+    """
+    Read parquet, write SQL
+    :return:
+    """
+    logger.info('Reading parquet dataset')
+
+    df = load_dataset(session, source_path)
+    df1 = (df
+           .select('AdmissionYear', 'State', 'Gender', 'ResidenceType')
+           .where(col('AdmissionYear') == 2020)
+    )
+    df1.show(10, truncate=False)
+
+    logger.info('Writing dataset to SQL')
+    to_sql(df1, table_name)
+
+    logger.info('Reading dataset from SQL')
+
+    (from_sql(session, table_name)
+     .select('State')
+     .groupBy('State')
+     .count()
+     .show(10))
+
+
+def app_2(session):
+    """
+    Read/write stream
+    :return:
+    """
+    lines = (session
+             .readStream
+             .format("socket")
+             .option("host", "localhost")
+             .option("port", 9999)
+             .load()
+             )
+
+    words = (lines
+             .select(split(col("value"), "\\s").alias("word"))
+             )
+    counts = words.groupBy("word").count()
+
+    writer = (counts
+              .writeStream
+              .format("console")
+              .outputMode("complete")
+              # .outputMode("append")
+              # .outputMode("update")
+              .trigger(processingTime="1 second")
+              .option("checkpointLocation", 'data/checkpoints')
+              )
+
+    logger.info('Creating stream')
+    return writer.start()
+
+
 if __name__ == '__main__':
 
     logger.info('Creating spark session')
@@ -88,28 +152,17 @@ if __name__ == '__main__':
         f"fs.azure.account.key.{STORAGE_ACCOUNT}.blob.core.windows.net",
         STORAGE_KEY)
 
-    logger.info('Reading parquet dataset')
-
     kinnser_patients_path = '/home/condesa1931/personal/github/py-methods/parquet/jupyter/data/KinnsrBIBaseData'
     # kinnser_patients_path = 'wasbs://enterprisedata@airflowstoragesandbox.blob.core.windows.net/KinnsrBIBaseData'
-    kinnser_patients_df = load_dataset(spark, kinnser_patients_path)
 
-    # sql_expressions(spark, kinnser_patients_df)
-    df1 = (kinnser_patients_df
-           .select('AdmissionYear', 'State', 'Gender', 'ResidenceType')
-           .where(col('AdmissionYear') == 2020)
-    )
-    df1.show(10, truncate=False)
+    # logger.info('SQL example')
+    # app_0(spark, load_dataset(spark, kinnser_patients_path))
 
-    logger.info('Writing dataset to SQL')
-    to_sql(df1, table="dbo.KinnserPatient")
+    logger.info('Read parquet, write SQL example')
+    app_1(spark, kinnser_patients_path, table_name='dbo.KinnserPatient')
 
-    logger.info('Reading dataset from SQL')
-
-    (from_sql(spark, table="dbo.KinnserPatient")
-     .select('State')
-     .groupBy('State')
-     .count()
-     .show(10))
+    # logger.info('Read/write stream example')
+    # streamingQuery = app_2(spark)
+    # streamingQuery.awaitTermination(timeout=60*5)
 
     logger.info('Processing complete')

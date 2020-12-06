@@ -7,6 +7,7 @@ from utils import (
     SQL_HOST, SQL_DB, SQL_USER, SQL_PASSWORD
 )
 
+
 def load_dataset(session, from_path, as_format="parquet"):
     """
     Load partitioned parquet files to a Spark Dataframe. The from_path

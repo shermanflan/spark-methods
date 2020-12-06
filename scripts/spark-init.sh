@@ -5,4 +5,4 @@ declare SPARK_HOME=/home/condesa1931/personal/github/spark-methods/install/spark
 
 source ~/personal/github/spark-methods/.venv/bin/activate
 
-./eyes-only.sh
+~/personal/github/spark-methods/scripts/eyes-only.sh
