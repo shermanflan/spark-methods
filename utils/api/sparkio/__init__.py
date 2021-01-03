@@ -55,7 +55,8 @@ def to_sql(df, table):
     # Write Option 1: Saving data to a JDBC source using save method
     (df
      .write
-     .mode('overwrite')
+     .mode('append')
+     # .mode('overwrite')
      .format("jdbc")
      .option("url", jdbc_url)
      .option("dbtable", table)

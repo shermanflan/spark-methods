@@ -1,3 +1,10 @@
+"""
+Usage:
+```
+. ./scripts/spark-init.sh
+./install/spark-3.0.1-bin-hadoop2.7/bin/spark-submit main.py
+```
+"""
 import logging
 
 from pyspark.sql import SparkSession
@@ -152,17 +159,26 @@ if __name__ == '__main__':
         f"fs.azure.account.key.{STORAGE_ACCOUNT}.blob.core.windows.net",
         STORAGE_KEY)
 
-    kinnser_patients_path = '/home/condesa1931/personal/github/py-methods/parquet/jupyter/data/KinnsrBIBaseData'
+    # kinnser_patients_path = '/home/condesa1931/personal/github/py-methods/parquet/jupyter/data/KinnsrBIBaseData'
     # kinnser_patients_path = 'wasbs://enterprisedata@airflowstoragesandbox.blob.core.windows.net/KinnsrBIBaseData'
 
     # logger.info('SQL example')
     # app_0(spark, load_dataset(spark, kinnser_patients_path))
 
-    logger.info('Read parquet, write SQL example')
-    app_1(spark, kinnser_patients_path, table_name='dbo.KinnserPatient')
+    # logger.info('Read parquet, write SQL example')
+    # app_1(spark, kinnser_patients_path, table_name='dbo.KinnserPatient')
 
     # logger.info('Read/write stream example')
     # streamingQuery = app_2(spark)
     # streamingQuery.awaitTermination(timeout=60*5)
+
+    logger.info('Another read parquet, write SQL example')
+    # source_path = '/home/condesa1931/personal/github/azure-methods/DevOpsAPI/data/aha-project-backup-2020-12-28-18-53.parquet'
+    # source_path = 'wasbs://enterprisedata@airflowstoragesandbox.blob.core.windows.net/aha-project-backup-2020-12-28-18-53.parquet'
+    source_path = 'wasbs://enterprisedata@airflowstoragesandbox.blob.core.windows.net/Raw/Aha/aha-project-backup-2020-12-28-18-53.parquet'
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=True)
+
+    to_sql(df, "Staging.AhaProject")
 
     logger.info('Processing complete')
