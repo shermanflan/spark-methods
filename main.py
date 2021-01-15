@@ -155,6 +155,7 @@ if __name__ == '__main__':
              #    f"fs.azure.account.key.{STORAGE_ACCOUNT}.blob.core.windows.net",
              #    STORAGE_KEY)
              .getOrCreate())
+
     spark.conf.set(
         f"fs.azure.account.key.{STORAGE_ACCOUNT}.blob.core.windows.net",
         STORAGE_KEY)
@@ -172,13 +173,77 @@ if __name__ == '__main__':
     # streamingQuery = app_2(spark)
     # streamingQuery.awaitTermination(timeout=60*5)
 
-    logger.info('Another read parquet, write SQL example')
-    # source_path = '/home/condesa1931/personal/github/azure-methods/DevOpsAPI/data/aha-project-backup-2020-12-28-18-53.parquet'
-    # source_path = 'wasbs://enterprisedata@airflowstoragesandbox.blob.core.windows.net/aha-project-backup-2020-12-28-18-53.parquet'
-    source_path = 'wasbs://enterprisedata@airflowstoragesandbox.blob.core.windows.net/Raw/Aha/aha-project-backup-2020-12-28-18-53.parquet'
-    df = load_dataset(spark, source_path)
-    df.show(5, truncate=True)
+    logger.info('Epic: read parquet, write SQL')
 
-    to_sql(df, "Staging.AhaProject")
+    # source_path = '/home/condesa1931/personal/github/azure-methods/DevOpsAPI/data/aha-project-backup-2020-12-28-18-53.parquet'
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/Epic/2021/aha-epic-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaEpic")
+
+    logger.info('Epoch: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/Epoch/2021/aha-epoch-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaEpoch")
+
+    logger.info('Feature: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/Feature/2021/aha-feature-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaFeature")
+
+    logger.info('Idea: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/Idea/2021/aha-idea-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaIdea")
+
+    logger.info('Initiative: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/Initiative/2021/aha-initiative-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaInitiative")
+
+    logger.info('IntegrationField: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/IntegrationField/2021/aha-integration-field-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaIntegrationField")
+
+    logger.info('Release: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/Release/2021/aha-release-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaRelease")
+
+    logger.info('Requirement: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/Requirement/2021/aha-requirement-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaRequirement")
+
+    logger.info('User: read parquet, write SQL')
+
+    source_path = f"wasbs://enterprisedata@{STORAGE_ACCOUNT}.blob.core.windows.net/Raw/ProductManagement/Enterprise/Aha/Table/User/2021/aha-user-backup_2021-01-15.parquet"
+
+    df = load_dataset(spark, source_path)
+    df.show(5, truncate=False)
+    to_sql(df, "Staging.AhaUser")
 
     logger.info('Processing complete')
